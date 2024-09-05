@@ -1,0 +1,36 @@
+{% extends "../base/base.html" %}
+{% block title %}Payapp{% endblock %}
+
+{% block navbar %}
+{% include "../base/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Make a Payment</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ payment_form.as_p }}
+                <button type="submit" name="make_payment" class="btn btn-primary">Send Payment</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h2>Request a Payment</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ request_form.as_p }}
+                <button type="submit" name="request_payment" class="btn btn-primary">Request Payment</button>
+            </form>
+        </div>
+    </div>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.level_tag == 'error'%}alert-danger{% else %}alert-success{% endif %}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

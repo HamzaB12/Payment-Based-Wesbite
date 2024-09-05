@@ -1,0 +1,105 @@
+{% extends "../base/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block navbar %}
+{% include "../base/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to your Dashboard, {{ user.first_name }} {{ user.last_name }}</h1>
+    <p>Email: {{ user.email }}</p>
+    <p>Currency: {{ profile.currency }}</p>
+    <p>Balance: {{ profile.balance }}</p>
+
+    <h2>Transaction History</h2>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Counterparty</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td>{{ t.transaction_date }}</td>
+                    <td>{{ t.type_display }}</td>
+                    <td>
+                        {% if t.sender == user %}
+                            {{ t.recipient.username }}
+                        {% else %}
+                            {{ t.sender.username }}
+                        {% endif %}
+                    </td>
+                    <td>{{ t.amount }}</td>
+                    <td>{{ t.get_status_display }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No transaction found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Your Notifications</h2>
+    <div class="accordion" id="notificationsAccordion">
+        {% for notification in notifications %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+                    Notification {{ forloop.counter }} - {{ notification.notification_date|date:"SHORT_DATE_FORMAT" }}
+                </button>
+            </h2>
+            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#notificationsAccordion">
+                <div class="accordion-body">
+                    {{ notification.message }}
+                    {% if notification.type == 'R' and notification.transaction.status == 'P' %}
+                    <div class="row">
+                        <div class="col-md-1">
+                            <form method="post" action="{% url 'accept_payment' notification.notification_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                            </form>
+                        </div>
+                        <div class="col-md-1">
+                            <form method="post" action="{% url 'refuse_payment' notification.notification_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Refuse</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% elif notification.type == 'R' and notification.transaction.status == 'C' %}
+                    <p class="text-success">Payment has been made successfully.</p>
+                    <form method="post" action="{% url 'delete_notification' notification.notification_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                    {% elif notification.type == 'R' and notification.transaction.status == 'F' %}
+                    <p class="text-danger">Payment has been declined.</p>
+                    <form method="post" action="{% url 'delete_notification' notification.notification_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No notifications.</p>
+        {% endfor %}
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.level_tag == 'error'%}alert-danger{% else %}alert-success{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+#register-form {
+    background-color: darkgray;
+    border: 0.2rem solid;
+    border-radius: 5%;
+    padding: 1.5rem;
+    max-width: 50%;
+    margin-bottom: 2rem;
+}
+
+#register-title{
+    margin: 2rem 0 2rem 0;
+    text-align: center;
+}
+
+#register-button{
+    text-align: center;
+}

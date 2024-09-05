@@ -1,0 +1,47 @@
+{% extends "../base/base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+{% endblock %}
+
+
+{% block title %}Home{% endblock %}
+
+{% block navbar %}
+{% include "../base/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<h1 class="title">Welcome to the PayApp</h1>
+<p>Your easy, reliable and secure payment partner.</p>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2>Why Choose PayApp?</h2>
+        <div class="feature-item">
+            <h3>Secure Payments</h3>
+            <p>Keep your transactions secure with end-to-end encryption.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Ease of Use</h3>
+            <p>Enjoy a simple and intuitive interface, no matter where you are.</p>
+        </div>
+        <div class="feature-item">
+            <h3>Global Reach</h3>
+            <p>Send and receive money across the globe with just a few taps.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials">
+    <div class="container">
+        <h2>What Our Customers Say</h2>
+        <div class="testimonial-item">
+            <blockquote>"PayApp has made online transactions a breeze for my business. Highly recommend!"</blockquote>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
